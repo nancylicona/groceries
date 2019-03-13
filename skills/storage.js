@@ -8,7 +8,7 @@ module.exports = function (controller) {
             "parameters": [],
             "response": {
                 "type": "mb",
-                "value": "add"
+                "value": "message"
             }
     }
 }
