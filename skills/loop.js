@@ -3,32 +3,46 @@
 //
 module.exports = function (controller) {
 
-    controller.hears([/^loop$/], 'direct_message,direct_mention', function (bot, message) {
+    controller.hears([/^recipe/], 'direct_message,direct_mention', function (bot, message) {
 
         bot.startConversation(message, function (err, convo) {
 
-            var question = "Here are a few proposed DevNet activities:";
-            question += "<br/> `1)` join a Community Of Interest (**communities**)";
-            question += "<br/> `2)` take a Learning Lab (**labs**)";
-            question += "<br/> `3)` check Upcoming Events (**events**)";
+            var question = "Here are a few proposed recipe websites:";
+            question += "<br/> `1)` Breakfast options (**Breakfast**)";
+            question += "<br/> `2)` Vegan options (**Vegan**)";
+            question += "<br/> `3)` Meal options (**Meal**)";
+            question += "<br/> `4)` Dessert options (**Dessert**)";
+            question += "<br/> `5)` Quick and Easy options (**QE**)";               
             question += "\n\nWhat do you want to check?<br/>_(type a number, a **bold keyword** or `stop`)_";
             convo.ask(question, [
                 {
-                    pattern: "1|community|communities",
+                    pattern: "1|breakfast|breakfasts|Breakfasts|Breakfast",
                     callback: function (response, convo) {
                         convo.gotoThread('menu_1');
                     },
                 }
                 , {
-                    pattern: "2|lab|track|learn",
+                    pattern: "2|Vegan|vegan|vegans|Vegans",
                     callback: function (response, convo) {
                         convo.gotoThread('menu_2');
                     },
                 }
                 , {
-                    pattern: "3|event|express",
+                    pattern: "3|meal|meals|Meal|Meals",
                     callback: function (response, convo) {
                         convo.gotoThread('menu_3');
+                    },
+                }
+                , {
+                    pattern: "4|dessert|desserts|Dessert|Desserts",
+                    callback: function (response, convo) {
+                        convo.gotoThread('menu_4');
+                  },
+                }
+                , {
+                    pattern: "5|Quick|Easy|QE|QuickandEasy",
+                    callback: function (response, convo) {
+                        convo.gotoThread('menu_5');
                     },
                 }
                 , {
@@ -47,22 +61,34 @@ module.exports = function (controller) {
 
             // Menu option 1)
             convo.addMessage({
-                text: "Excellent choice: now [discover the DevNet communities](https://developer.cisco.com/site/coi/) online, and pick your favorite...",
+                text: "The most important meal of the day [Breakfast](https://www.tasteofhome.com/course/breakfast-recipes/). Check the online recipes and pick your favorite!",
                 action: 'default'
             }, 'menu_1');
 
             // Menu option 2)
             convo.addMessage({
-                text: "Learnings **labs** are step-by-step tutorials. They are grouped into **tracks** to help you on your rampup journey. Just browse through [the learnings tracks](https://learninglabs.cisco.com/login) and pick the labs that suits your learning appetite!",
+                text: "[Vegan recipes](https://cookieandkate.com/2018/29-vegan-dinner-recipes/) you will enjoy it. Check the online recipes and pick your favorite!",
                 action: 'default'
             }, 'menu_2');
 
             // Menu option 3)
             convo.addMessage({
-                text: "Nothing's like meeting in person at a conference, training or a hackathon. Check the list of [DevNet events](https://developer.cisco.com/site/devnet/events-contests/events/) or ask the bot: invite `CiscoDevNet@sparkbot.io` to chat in a Webex Teams space.",
+                text: "Bon appetit! [Meal time](https://www.allrecipes.com/recipes/17562/dinner/). Check the online recipes and pick your favorite!",
                 action: 'default'
             }, 'menu_3');
 
+             // Menu option 4)
+            convo.addMessage({
+                 text: "First [Dessert](https://www.allrecipes.com/recipes/79/desserts/). Check the online recipes and pick your favorite!",
+                action: 'default'
+            }, 'menu_4');           
+
+            // Menu option 5)
+            convo.addMessage({
+                text: "On a rush? [Quick and easy recipe](https://greatist.com/eat/10-minute-recipes) options. Check the online recipes and pick your favorite!",
+                action: 'default'
+            }, 'menu_5');            
+            
             // Cancel
             convo.addMessage({
                 text: "Got it, cancelling...",
