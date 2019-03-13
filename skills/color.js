@@ -3,13 +3,13 @@
 //
 module.exports = function (controller) {
 
-    controller.hears([/^color$/], 'direct_message,direct_mention', function (bot, message) {
+    controller.hears([/^favorite$/], 'direct_message,direct_mention', function (bot, message) {
 
         bot.startConversation(message, function (err, convo) {
-            convo.say('This is a Botkit conversation sample.');
+            convo.say('I see you have a new favorite food/item!');
 
-            convo.ask('What is your favorite color?', function (response, convo) {
-                convo.say("Cool, I like '" + response.text + "' too!");
+            convo.ask('What item/food is it?', function (response, convo) {
+                convo.say("Cool, I added '" + response.text + "' to your list of favorites!");
                 convo.next();
             });
         });
