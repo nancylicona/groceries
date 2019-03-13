@@ -67,7 +67,7 @@ module.exports = function (controller) {
 
             // Menu option 2)
             convo.addMessage({
-                text: "[Vegan recipes](https://cookieandkate.com/2018/29-vegan-dinner-recipes/) you will enjoy it. Check the online recipes and pick your favorite!",
+                text: "[Vegan recipes](https://cookieandkate.com/2018/29-vegan-dinner-recipes/) from your favorite website. Check the online recipes and pick your favorite!",
                 action: 'default'
             }, 'menu_2');
 
