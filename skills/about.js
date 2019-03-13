@@ -11,8 +11,8 @@ module.exports = function (controller, bot) {
         // Bot description
         "description": "I help you get your groceries!",
 
-        // Where to get more information about the bot
-        "url": "unknown",
+//         // Where to get more information about the bot
+//         "url": "unknown",
 
         // Legal owner
         "legal_owner": "Nancy Licona",
