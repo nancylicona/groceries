@@ -7,7 +7,6 @@ module.exports = function (controller) {
         var text = "Here are my skills:";
         text += "\n- " + bot.appendMention(message, "favorite") + ": update your list of favorites";
         text += "\n- " + bot.appendMention(message, "recipe") + ": shows recipes from different websites";
-        text += "\n- " + bot.appendMention(message, "menu") + ": implement a menu via a conversation";
         text += "\n- " + bot.appendMention(message, "quiz") + ": multi-threaded conversation with timeout";
         text += "\n- " + bot.appendMention(message, "restricted") + ": let a user pick a color among a set of options";
         text += "\n- " + bot.appendMention(message, "storage") + ": store picked color as a user preference";
