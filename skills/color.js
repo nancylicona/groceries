@@ -9,11 +9,9 @@ module.exports = function (controller) {
             
             convo.ask('I see you have a new favorite item/food. What item/food is it?', function (response, convo) {
                 convo.say("Cool, I added '" + response.text + "' to your list of favorites!");
-                myObj.favorite[i]=response.text;
-             }   
-           convo.say("Displaying your list of favorites:");        
-           convo.next();            
-                
+                convo.say("Displaying your list of favorites:");        
+                convo.next();   
+             }     
 
             });
         });
