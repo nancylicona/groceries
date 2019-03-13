@@ -9,7 +9,7 @@ module.exports = function (controller, bot) {
     var botcommons = {
 
         // Bot description
-        "description": "For sure!",
+        "description": "I help you get your groceries!",
 
         // Where to get more information about the bot
         "url": "https://github.com/CiscoDevNet/botkit-template",
