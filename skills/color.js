@@ -10,6 +10,8 @@ module.exports = function (controller) {
 
             convo.ask('What item/food is it?', function (response, convo) {
                 convo.say("Cool, I added '" + response.text + "' to your list of favorites!");
+                convo.say("Displaying the list:");
+                
                 convo.next();
             });
         });
