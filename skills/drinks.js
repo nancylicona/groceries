@@ -3,7 +3,7 @@
 //
 module.exports = function (controller) {
 
-    controller.hears([/^recipe/], 'direct_message,direct_mention', function (bot, message) {
+    controller.hears([/^drinks/], 'direct_message,direct_mention', function (bot, message) {
 
         bot.startConversation(message, function (err, convo) {
 
