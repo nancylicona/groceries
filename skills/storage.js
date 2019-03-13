@@ -1,111 +1,173 @@
-//
-// Stores a user choice in Botkit 'users' storage, so that the value can be retreived later
-//
-module.exports = function (controller) {
-
-    controller.hears([/^storage$/], 'direct_message,direct_mention', function (bot, message) {
-
-        // Check if a User preference already exists
-        var userId = message.raw_message.actorId;
-        controller.storage.users.get(userId, function (err, data) {
-            if (err) {
-                bot.reply(message, 'could not access storage, err: ' + err.message, function (err, message) {
-                    bot.reply(message, 'sorry, I am not feeling well \uF613! try again later...');
-                });
-                return;
+{
+    "intents": [
+        {
+            "name": "addTodo",
+            "utterances": [],
+            "parameters": [],
+            "response": {
+                "type": "mb",
+                "value": "add"
             }
-
-            // User preference found
-            if (data) {
-                // Show user preference
-                showUserPreference(controller, bot, message, userId, data.value);
-                return;
+        },
+        {
+            "name": "showTodo",
+            "utterances": [],
+            "parameters": [],
+            "response": {
+                "type": "mb",
+                "value": "list"
             }
-
-            // Ask for prefrence
-            askForUserPreference(controller, bot, message, userId);
-        });
-    });
-}
-
-function showUserPreference(controller, bot, message, userId, color) {
-    bot.startConversation(message, function (err, convo) {
-
-        // [GOOD TO KNOW] Mentions are now failing in 1-1 spaces
-        //convo.sayFirst(`Hey, I know you <@personId:${userId}>!<br/> '${color}' is your favorite color.`);
-        convo.sayFirst(`Hey, I know you! **'${color}'** is your favorite color.`);
-
-        convo.ask("Should I erase your preference? (yes/**no**)", [
-            {
-                pattern: "^yes|ya|da|si|oui$",
-                callback: function (response, convo) {
-
-                    // [WORKAROUND] use storage.users.delete if in-memory storage and storage.users.remove if redis storage
-                    controller.storage.users.delete(userId, function (err) {
-                        if (err) {
-                            // [TODO] Turn into a thread or simply stop the current conversation
-                            // convo.say(message, 'sorry, could not access storage, err: ' + err.message);
-                            convo.repeat();
-                            return;
-                        }
-
-                        convo.say("Successfully reset your color preference.");
-                        convo.next();
-                    });
-
+        },
+        {
+            "name": "updateTodo",
+            "utterances": [],
+            "parameters": [],
+            "response": {
+                "type": "mb",
+                "value": "update"
+            }
+        },
+        {
+            "name": "deleteTodo",
+            "utterances": [],
+            "parameters": [],
+            "response": {
+                "type": "mb",
+                "value": "remove"
+            }
+        },
+        {
+            "name": "welcome",
+            "utterances": [],
+            "parameters": [],
+            "response": {
+                "type": "text",
+                "value": "Hey! I can manage your todo list!"
+            }
+        }
+    ],
+    "token": "dialogFlowToken",
+    "subIntents": [
+        {
+            "name": "deleteTodoAt",
+            "utterances": [],
+            "parameters": []
+        },
+        {
+            "name": "updateTodoAt",
+            "utterances": [],
+            "parameters": []
+        },
+        {
+            "name": "yes",
+            "utterances": [],
+            "parameters": []
+        },
+        {
+            "name": "no",
+            "utterances": [],
+            "parameters": []
+        },
+        {
+            "name": "number",
+            "utterances": [],
+            "parameters": []
+        }
+    ],
+    "entities": [],
+    "microBots": [
+        {
+            "name": "add",
+            "states": [
+                {
+                    "name": "start",
+                    "response": {
+                        "type": "text",
+                        "value": "Shall I go ahead and add this todo?"
+                    },
+                    "transitions": [
+                        {
+                            "name": "yes",
+                            "function": "addTodoToList"
+                        },
+                        {
+                            "name": "no",
+                            "nextState": "rejectedState"
+                        }  
+                    ]
                 },
-            },
-            {
-                default: true,
-                callback: function (response, convo) {
-                    convo.say("Got it, leaving your preference as is.");
-                    convo.next();
-                }
-            }
-        ]);
-    });
-}
-
-function askForUserPreference(controller, bot, message, userId) {
-    bot.startConversation(message, function (err, convo) {
-
-        convo.ask("What is your favorite color?", [
-            {
-                pattern: "^blue|green|pink|red|yellow$",
-                callback: function (response, convo) {
-
-                    // Store color as user preference
-                    var pickedColor = convo.extractResponse('answer');
-                    var userPreference = { id: userId, value: pickedColor };
-                    controller.storage.users.save(userPreference, function (err) {
-                        if (err) {
-                            convo.say(message, 'sorry, could not access storage, err: ' + err.message);
-                            convo.next();
-                            return;
+                {
+                    "name": "rejectedState",
+                    "response": {
+                        "type": "text",
+                        "value": "Alright!"
+                    },
+                    "transitions": [
+                        {
+                            "name": "string",
+                            "reply": "I have not added the todo!"
                         }
-
-                        convo.transitionTo("success", "_successfully stored user preference_");
-                    });
-
-                },
-            },
-            {
-                default: true,
-                callback: function (response, convo) {
-                    convo.gotoThread('bad_response');
+                    ]
                 }
-            }
-        ], { key: "answer" });
-
-        // Bad response
-        convo.addMessage({
-            text: "Sorry, I don't know this color.<br/>_Tip: try blue, green, pink, red or yellow!_",
-            action: 'default',
-        }, 'bad_response');
-
-        // Success thread
-        convo.addMessage(
-            "Cool, I love '{{responses.answer}}' too",
-            "success");
-    });
+            ]
+        },
+        {
+            "name": "list",
+            "states": [
+                {
+                    "name": "start",
+                    "response": {
+                        "type": "function",
+                        "value": "showTodos"
+                    },
+                    "transitions": [
+                        {
+                            "name": "deleteTodoAt",
+                            "function": "deletTodoAt"
+                        },
+                        {
+                            "name": "updateTodoAt",
+                            "function": "updateTodoAt"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "update",
+            "states": [
+                {
+                    "name": "start",
+                    "response": {
+                        "type": "function",
+                        "value": "showAndAskWhichToUpdate"
+                    },
+                    "transitions": [
+                        {
+                            "name": "number",
+                            "function": "updateTodo"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "remove",
+            "states": [
+                {
+                    "name": "start",
+                    "response": {
+                        "type": "function",
+                        "value": "showAndAskWhichToUpdate"
+                    },
+                    "transitions": [
+                        {
+                            "name": "number",
+                            "function": "deleteTodo"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }
